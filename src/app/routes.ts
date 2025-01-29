@@ -1,14 +1,13 @@
 import express from "express";
 import userRouter from "./modules/user/user.routes";
-// import upload from "../helper/uploads";
-// import uploadToBunny from "./middleware/uploadToBunny";
-import { auth } from "./middleware/auth";
 
+import { auth } from "./middleware/auth";
+import { uploadCloudinary } from "./middleware/uploadToCloudinary";
 
 const router = express.Router();
 
 const moduleRoute = [
-  { path: "/users", routes: userRouter, auth:false },
+  { path: "/users", routes: userRouter, auth: false },
   // { path: "/transactions", routes: transactionRouter, auth: true },
   // { path: "/todo", routes: todoRouter, auth: true },
 ];
@@ -18,6 +17,22 @@ moduleRoute.forEach((route) =>
 );
 
 // upload
-// router.post("/upload", auth(), upload.single("photos"), uploadToBunny);
+// router.post("/upload", auth(), upload.single("photo"), (req, res, next) => {
+router.post("/upload", uploadCloudinary.single("photo"), (req, res, next) => {
+  try {
+    console.log(req.file);
+    res.send({
+      success: true,
+      message: "File uploaded successfully",
+      data: {
+        path: req.file?.path,
+        size: req.file?.size,
+        filename: req.file?.filename,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;

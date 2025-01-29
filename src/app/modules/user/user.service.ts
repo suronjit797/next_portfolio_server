@@ -1,22 +1,17 @@
 import httpStatus from "http-status";
 import ApiError from "../../../ApiError";
 import config from "../../../config";
-import { CreateUserInput, TUser } from "./user.interface";
+import { TUser } from "./user.interface";
 import UserModel from "./user.model";
 import bcrypt from "bcrypt";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { CustomJwtPayload, IPagination, IGetAll_service, TFilter } from "../../../shared/globalInterfaces";
-import { userRole } from "../../../constants/userConstants";
-import mongoose, { ObjectId } from "mongoose";
+import jwt from "jsonwebtoken";
+import globalService from "../../global/global.service";
 
-type LoginPayload = {
-  email: string;
-  password: string;
-};
-type LoginRes = { accessToken: string; refreshToken: string };
+// global
+const globalServices = globalService(UserModel);
 
 // auth
-export const createUserService = async (user: CreateUserInput): Promise<TUser | null> => {
+globalServices.create = async (user: TUser): Promise<TUser | null> => {
   const isExist = await UserModel.findOne({ email: user.email });
   if (isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User already exists");
@@ -26,17 +21,17 @@ export const createUserService = async (user: CreateUserInput): Promise<TUser | 
     throw new ApiError(httpStatus.BAD_REQUEST, "Password is required");
   }
 
-  const avatar = `https://ui-avatars.com/api/?name=${user.name}.png`;
-  // const avatar = `https://avatar.iran.liara.run/username?username=${user.name}.png`;
-
   const password = await bcrypt.hash(user.password, bcrypt.genSaltSync(config.sault_round));
-  const userData = { ...user, password, avatar };
+  const userData = { ...user, password };
 
   const newUser = await UserModel.create(userData);
   return newUser;
 };
 
-export const loginService = async (payload: LoginPayload): Promise<LoginRes> => {
+const login = async (payload: {
+  email: string;
+  password: string;
+}): Promise<{ accessToken: string; refreshToken: string }> => {
   const isExist = await UserModel.findOne({ email: payload.email });
   if (!isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User Dose not Exist");
@@ -61,34 +56,6 @@ export const loginService = async (payload: LoginPayload): Promise<LoginRes> => 
   };
 };
 
-// export const getProfile_service = async (id: string): Promise<TUser | null> => {
-//   const data = await UserModel.findById(id).select({ password: 0 });
-//   return data;
-// };
+const userServices = { ...globalServices, login };
 
-export const updateProfile_service = async (id: string, payload: Partial<TUser>): Promise<TUser | null> => {
-  const data = await UserModel.findByIdAndUpdate(id, { $set: payload }, { new: true });
-  return data;
-};
-
-// user
-export const getAll_service = async (
-  pagination: IPagination,
-  filter: TFilter
-): Promise<IGetAll_service<TUser[] | null>> => {
-  const { page, limit, skip, sortCondition } = pagination;
-  const data = await UserModel.find(filter).limit(limit).skip(skip).sort(sortCondition).select({ password: 0 });
-  const total = await UserModel.countDocuments(filter);
-  return { data, meta: { page, limit, total } };
-};
-export const getSingle_service = async (id: string | ObjectId): Promise<Partial<TUser> | null> => {
-  return await UserModel.findById(id).select({ password: 0 });
-};
-export const update_service = async (id: string, payload: Partial<TUser>): Promise<TUser | null> => {
-  const data = await UserModel.findByIdAndUpdate(id, payload, { new: true });
-  return data;
-};
-export const remove_service = async (id: string): Promise<any> => {
-  const data = await UserModel.findByIdAndDelete(id);
-  return data;
-};
+export default userServices;

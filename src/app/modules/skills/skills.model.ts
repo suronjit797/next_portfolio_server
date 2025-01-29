@@ -4,8 +4,8 @@ import { ISkills, ISkillsModel } from "./skills.interface";
 const skillsSchema = new Schema<ISkills>(
   {
     name: { type: String, required: true, trim: true },
-    image: { type: String, required: true },
     types: { type: String, required: true, trim: true },
+    image: { type: Object, required: true },
   },
   { timestamps: true }
 );

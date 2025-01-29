@@ -22,18 +22,6 @@ const userSchema = new Schema<TUser>(
       type: String,
       required: true,
     },
-    avatar: {
-      type: String,
-      required: true,
-    },
-    isActive: {
-      type: Boolean,
-      default: false,
-    },
-    lastActive:{
-      type: Date,
-      default: Date.now,
-    }
   },
   { timestamps: true }
 );

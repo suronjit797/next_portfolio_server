@@ -5,10 +5,7 @@ import config from "./config";
 import app from "./app";
 import { expressMiddleware } from "@apollo/server/express4";
 import globalError, { notFoundError } from "./app/middleware/globalError";
-import { graphqlServer } from "./app/graphql";
 import { decodeToken } from "./app/middleware/auth";
-import { GraphqlContext } from "./shared/globalInterfaces";
-import initSocket from "./Scoket";
 
 // Define server variable type
 export const server: Server = http.createServer(app);
@@ -28,36 +25,6 @@ const bootFunctions = async (): Promise<void> => {
     successLogger(`Connecting to database at ${config.DB_URI}`);
     await mongoose.connect(config.DB_URI as string);
     successLogger("🛢 Database connected...");
-
-    // // init socket
-    // initSocket();
-
-    // Initialize GraphQL server
-    await graphqlServer.start();
-    app.use(
-      "/api/v1/graphql",
-      expressMiddleware<GraphqlContext>(graphqlServer, {
-        context: async ({ req, res }): Promise<GraphqlContext> => {
-          const bearerToken = req.headers?.authorization; // Extract token from "Bearer <token>"
-
-          let user;
-          if (bearerToken) {
-            try {
-              user = await decodeToken(bearerToken); // Decode the token to get user details
-            } catch (error) {
-              console.error("Invalid token", error);
-              user = undefined; // Handle invalid tokens gracefully
-            }
-          }
-
-          return {
-            user,
-            req,
-            res,
-          };
-        },
-      })
-    );
 
     // Middleware for global errors and 404 handling
     app.use(globalError);

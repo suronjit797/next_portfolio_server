@@ -9,28 +9,38 @@ import { GraphqlContext, IPagination } from "../../../shared/globalInterfaces";
 import * as userService from "../user/user.service";
 
 export const skillsTypeDefs = gql`
+
   # queries
+
+  type SkillImage {
+    path: String!
+    size: Float!
+    filename: String!
+  }
   type Skills {
     _id: ID!
     name: String!
-    image: String!
+    image: SkillImage!
     types: String!
     createdAt: Date!
     updatedAt: Date!
   }
 
   # inputs
+  input SkillImageInp {
+    path: String!
+    size: Float!    # Assuming size is represented in bytes
+    filename: String!
+  }
+
   input CreateSkillsInput {    
     name: String!
-    image: String!
+    image: SkillImageInp!
     types: String!
   }
 
-
-
   input SkillsQuery {
     name: String
-    image: String
     types: String
     createdAt: String
     updatedAt: String
@@ -74,7 +84,6 @@ export const skillsResolvers = {
   Query: {
     getSkills: async (_: undefined, args: SkillsPaginationArgs, context: GraphqlContext): Promise<GetAllSkills> => {
       const { req } = context;
-
       // Authorization
       await apolloAuth(req, "admin");
 

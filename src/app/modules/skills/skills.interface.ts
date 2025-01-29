@@ -3,8 +3,12 @@ import { IMeta, IPagination } from "../../../shared/globalInterfaces";
 
 export interface ISkills {
   name: string;
-  image: string;
   types: string;
+  image: {
+    path: string;
+    size: number | string;
+    filename: string;
+  };
 }
 
 export type ISkillsModel = Model<ISkills, Record<string, unknown>>;
