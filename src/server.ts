@@ -1,14 +1,11 @@
 import mongoose from "mongoose";
-import http, { Server } from "http";
+import { Server } from "http";
 import { errorLogger, successLogger } from "./shared/logger";
 import config from "./config";
 import app from "./app";
-import { expressMiddleware } from "@apollo/server/express4";
-import globalError, { notFoundError } from "./app/middleware/globalError";
-import { decodeToken } from "./app/middleware/auth";
 
 // Define server variable type
-export const server: Server = http.createServer(app);
+export let server: Server;
 
 process.on("uncaughtException", (error: Error) => {
   errorLogger(`uncaughtException: ${error.message}`);
@@ -26,11 +23,7 @@ const bootFunctions = async (): Promise<void> => {
     await mongoose.connect(config.DB_URI as string);
     successLogger("🛢 Database connected...");
 
-    // Middleware for global errors and 404 handling
-    app.use(globalError);
-    app.use(notFoundError);
-
-    server.listen(config.PORT, () => {
+    server = app.listen(config.PORT, () => {
       successLogger(
         `[${config.NODE_ENV === "production" ? "Prod" : "Dev"}] Server is online at http://localhost:${config.PORT}/`
       );
