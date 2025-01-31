@@ -22,6 +22,10 @@ const userSchema = new Schema<TUser>(
       type: String,
       required: true,
     },
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

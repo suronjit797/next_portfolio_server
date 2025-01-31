@@ -1,11 +1,16 @@
 import mongoose from "mongoose";
-import { Server } from "http";
+import http, { Server } from "http";
 import { errorLogger, successLogger } from "./shared/logger";
 import config from "./config";
 import app from "./app";
+import { expressMiddleware } from "@apollo/server/express4";
+import globalError, { notFoundError } from "./app/middleware/globalError";
+import { graphqlServer } from "./app/graphql";
+import { decodeToken } from "./app/middleware/auth";
+import { GraphqlContext } from "./shared/globalInterfaces";
 
 // Define server variable type
-export let server: Server;
+export let server: Server = http.createServer(app);
 
 process.on("uncaughtException", (error: Error) => {
   errorLogger(`uncaughtException: ${error.message}`);
@@ -23,7 +28,39 @@ const bootFunctions = async (): Promise<void> => {
     await mongoose.connect(config.DB_URI as string);
     successLogger("🛢 Database connected...");
 
-    server = app.listen(config.PORT, () => {
+  
+    // Initialize GraphQL server
+    await graphqlServer.start();
+    app.use(
+      "/api/v1/graphql",
+      expressMiddleware<GraphqlContext>(graphqlServer, {
+        context: async ({ req, res }): Promise<GraphqlContext> => {
+          const bearerToken = req.headers?.authorization; // Extract token from "Bearer <token>"
+
+          let user;
+          if (bearerToken) {
+            try {
+              user = await decodeToken(bearerToken); // Decode the token to get user details
+            } catch (error) {
+              console.error("Invalid token", error);
+              user = undefined; // Handle invalid tokens gracefully
+            }
+          }
+
+          return {
+            user,
+            req,
+            res,
+          };
+        },
+      })
+    );
+
+    // Middleware for global errors and 404 handling
+    app.use(globalError);
+    app.use(notFoundError);
+
+    server.listen(config.PORT, () => {
       successLogger(
         `[${config.NODE_ENV === "production" ? "Prod" : "Dev"}] Server is online at http://localhost:${config.PORT}/`
       );

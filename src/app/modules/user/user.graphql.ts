@@ -1,70 +1,152 @@
 import gql from "graphql-tag";
 import UserModel from "./user.model";
-import * as userService from "./user.service";
-import { LoginPayload, TUser } from "./user.interface";
+import userService from "./user.service";
+import { CreateUserInput, GetAllUsers, LoginPayload, LoginResponse, PaginationArgs, TUser } from "./user.interface";
 import { apolloAuth } from "../../middleware/auth";
+import { paginationHelper } from "../../../helper/paginationHelper";
+import filterHelper from "../../../helper/filterHelper";
+import { GraphqlContext } from "../../../shared/globalInterfaces";
+import { userRole } from "../../../constants/userConstants";
 
 export const userTypeDefs = gql`
-  # main user type
+  # queries
   type User {
     _id: ID!
     name: String!
     email: String!
     role: String!
+    avatar: String!
+    isActive: Boolean
+    lastActive: Date
     createdAt: String!
     updatedAt: String!
-  }
-
-  # register
-  input CreateUserInput {
-    name: String!
-    email: String!
-    role: String!
-    password: String!
-  }
-
-  # login
-  input LoginInput {
-    email: String!
-    password: String!
   }
   type LoginResponse {
     accessToken: String!
     refreshToken: String!
   }
 
-  # user query
-  type Query {
-    users(limit: Int!): [User!]!
-    user(id: ID!): User
+  # inputs
+  input CreateUserInput {
+    name: String!
+    email: String!
+    role: String
+    password: String!
   }
 
-  # user mutation
+  input UpdateUserInput {
+    name: String
+    email: String
+    role: String
+  }
+
+  input LoginInput {
+    email: String!
+    password: String!
+  }
+
+  input UserQuery {
+    _id: ID
+    name: String
+    email: String
+    role: String
+    createdAt: String
+    updatedAt: String
+    search: String
+  }
+
+  type getAllUsersQuery {
+    meta: MetaQuery
+    data: [User!]
+  }
+
+  # query
+  type Query {
+    users(pagination: PaginationInput, query: UserQuery): getAllUsersQuery!
+    user(id: ID!): User
+    profile: User
+  }
+
+  # mutation
   type Mutation {
     register(body: CreateUserInput!): User!
     login(body: LoginInput): LoginResponse!
-    # deleteUser(id: ID!): Boolean!
+    deleteUser(id: ID!): User!
+    updateUser(id: ID!, body: UpdateUserInput): User!
   }
 `;
 
 export const userResolvers = {
   Query: {
-    users: async (_: any, __: any, { req }: any) => {
-      await apolloAuth(req, 'admin');
-      return await userService.getAll_service()
-    },
-    user: async (_: any, { id }: { id: string }, { req }: any) => {
+    users: async (_: undefined, args: PaginationArgs, context: GraphqlContext): Promise<GetAllUsers> => {
+      const { req } = context;
+
+      // Authorization
       await apolloAuth(req);
-      return await userService.getSingle_service(id);
+
+      // Pagination and filtering
+      const page = paginationHelper(args.pagination);
+      const filter = filterHelper(args.query || {}, new UserModel(), ["name", "email"]);
+      filter._id = { $ne: context.user?._id };
+      filter.role = { $ne: userRole.superAdmin };
+
+      // Fetch users
+      return await userService.getAll(page, filter);
+    },
+
+    user: async (_: undefined, args: { id: string }, context: GraphqlContext): Promise<Partial<TUser> | null> => {
+      const { req } = context;
+
+      // Authorization
+      await apolloAuth(req);
+
+      // Fetch single user
+      return await userService.getSingle(args.id);
+    },
+
+    profile: async (_: undefined, __: undefined, { user, req }: GraphqlContext): Promise<Partial<TUser> | null> => {
+      // Authorization
+      await apolloAuth(req);
+
+      if (!user?._id) throw new Error("user not found");
+      // Fetch profile
+      return await userService.getSingle(user?._id);
     },
   },
-  Mutation: {
-    register: async (_: any, { body }: { body: TUser }) => await userService.createUserService(body),
-    login: async (_: any, { body }: { body: LoginPayload }) => await userService.loginService(body),
 
-    // deleteUser: async (_: any, { id }: { id: string }) => {
-    //   const result = await UserModel.findByIdAndDelete(id);
-    //   return !!result; // Return `true` if the user was deleted, `false` otherwise
-    // },
+  Mutation: {
+    register: async (_: undefined, args: { body: CreateUserInput }): Promise<TUser | null> => {
+      // Register user
+      return await userService.create(args.body);
+    },
+
+    login: async (_: undefined, args: { body: LoginPayload }): Promise<LoginResponse> => {
+      // Login user
+      return await userService.login(args.body);
+    },
+
+    deleteUser: async (_: undefined, args: { id: string }, context: GraphqlContext): Promise<TUser> => {
+      const { req } = context;
+
+      // Authorization
+      await apolloAuth(req);
+
+      // Delete user
+      return await userService.remove(args.id);
+    },
+
+    updateUser: async (
+      _: undefined,
+      args: { id: string; body: Partial<TUser> },
+      context: GraphqlContext
+    ): Promise<TUser | null> => {
+      const { req } = context;
+
+      // Authorization
+      await apolloAuth(req);
+
+      // Update user
+      return await userService.update(args.id, args.body);
+    },
   },
 };
