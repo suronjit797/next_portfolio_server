@@ -1,40 +1,22 @@
 import { RequestHandler } from "express";
-import * as userService from "./user.service";
+import userService from "../user/user.service";
 import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import ApiError from "../../../ApiError";
 import config from "../../../config";
+import globalController from "../../global/global.controller";
 import { paginationHelper } from "../../../helper/paginationHelper";
 import filterHelper from "../../../helper/filterHelper";
-import UserModel from "./user.model";
+import UserModel from "../user/user.model";
 import { userRole } from "../../../constants/userConstants";
 
-// auth
-export const createUser: RequestHandler = async (req, res, next) => {
+const name = "User";
+// global
+const globalControllers = globalController(userService, name);
+
+const login: RequestHandler = async (req, res, next) => {
   try {
-    const data = await userService.createUserService(req.body);
-
-    if (!data) {
-      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "User Create Failed");
-    }
-
-    data.password = undefined;
-
-    const payload = {
-      success: true,
-      message: "User created successfully",
-      data,
-    };
-    return sendResponse(res, httpStatus.CREATED, payload);
-  } catch (error) {
-    console.log(error)
-    next(error);
-  }
-};
-
-export const loginUser: RequestHandler = async (req, res, next) => {
-  try {
-    const data = await userService.loginService(req.body);
+    const data = await userService.login(req.body);
 
     if (!data) {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "User Login Failed");
@@ -60,29 +42,9 @@ export const loginUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-// user actions
-// export const getProfile: RequestHandler = async (req, res, next) => {
-//   try {
-//     const data = await userService.getProfile_service(req.user.userId);
-
-//     if (!data) {
-//       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Server Error");
-//     }
-
-//     const payload = {
-//       success: true,
-//       message: "User fetched successfully",
-//       data,
-//     };
-//     return sendResponse(res, httpStatus.OK, payload);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
-export const updateProfile: RequestHandler = async (req, res, next) => {
+const updateProfile: RequestHandler = async (req, res, next) => {
   try {
-    const data = await userService.updateProfile_service(req.user.userId, req.body);
+    const data = await userService.update(req.user.userId, req.body);
 
     if (!data) {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Server Error");
@@ -99,13 +61,12 @@ export const updateProfile: RequestHandler = async (req, res, next) => {
   }
 };
 
-// user
-export const getAll: RequestHandler = async (req, res, next) => {
+const getAll: RequestHandler = async (req, res, next) => {
   try {
     const pagination = paginationHelper(req.query);
-    const filter = filterHelper(req, new UserModel(), ["name", "email"]);
+    const filter = filterHelper(req.query, new UserModel(), ["name", "email"]);
     filter.role = { $ne: userRole.superAdmin };
-    const { data, meta } = await userService.getAll_service(pagination, filter);
+    const { data, meta } = await userService.getAll(pagination, filter);
 
     if (!data) {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Server Error");
@@ -123,12 +84,12 @@ export const getAll: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const getSingle: RequestHandler = async (req, res, next) => {
+const getProfile: RequestHandler = async (req, res, next) => {
   try {
-    const data = await userService.getSingle_service(req.params.id);
+    const data = await userService.getSingle(req.user._id);
     const payload = {
       success: true,
-      message: "User fetched successfully",
+      message: "Profile fetched successfully",
       data,
     };
     return sendResponse(res, httpStatus.OK, payload);
@@ -137,44 +98,5 @@ export const getSingle: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const update: RequestHandler = async (req, res, next) => {
-  try {
-    const user = await UserModel.findById(req.params.id);
-
-    let data;
-
-    if (req.user.role === userRole.admin || req.user.role === userRole.superAdmin || user) {
-      data = await userService.update_service(req.params.id, req.body);
-    } else {
-      throw new ApiError(httpStatus.UNAUTHORIZED, "You are not allowed to perform this action");
-    }
-
-    if (!data) {
-      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Server Error");
-    }
-
-    const payload = {
-      success: true,
-      message: "User Updated successfully",
-      data,
-    };
-    return sendResponse(res, httpStatus.OK, payload);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const remove: RequestHandler = async (req, res, next) => {
-  try {
-    const data = await userService.remove_service(req.params.id);
-
-    const payload = {
-      success: true,
-      message: "User Deleted successfully",
-      data,
-    };
-    return sendResponse(res, httpStatus.OK, payload);
-  } catch (error) {
-    next(error);
-  }
-};
+const userController = { ...globalControllers, login, updateProfile, getAll, getProfile };
+export default userController;

@@ -15,7 +15,7 @@ export const userTypeDefs = gql`
     name: String!
     email: String!
     role: String!
-    avatar: String!
+    avatar: String
     isActive: Boolean
     lastActive: Date
     createdAt: String!
@@ -31,6 +31,7 @@ export const userTypeDefs = gql`
     name: String!
     email: String!
     role: String
+    isActive: Boolean
     password: String!
   }
 
@@ -38,6 +39,7 @@ export const userTypeDefs = gql`
     name: String
     email: String
     role: String
+    isActive: Boolean
   }
 
   input LoginInput {

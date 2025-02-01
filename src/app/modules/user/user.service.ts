@@ -33,8 +33,14 @@ const login = async (payload: {
   password: string;
 }): Promise<{ accessToken: string; refreshToken: string }> => {
   const isExist = await UserModel.findOne({ email: payload.email });
+  console.log(isExist, isExist?.isActive);
+
   if (!isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User Dose not Exist");
+  }
+
+  if (!isExist.isActive) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "User Dose not have login permission");
   }
 
   const match = await bcrypt.compare(payload.password, isExist.password as string);

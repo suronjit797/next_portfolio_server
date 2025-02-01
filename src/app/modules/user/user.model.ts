@@ -26,6 +26,11 @@ const userSchema = new Schema<TUser>(
       type: Boolean,
       default: false,
     },
+    avatar: {
+      path: String,
+      size: String || Number,
+      filename: String,
+    },
   },
   { timestamps: true }
 );
