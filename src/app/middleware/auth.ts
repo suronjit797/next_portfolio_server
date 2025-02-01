@@ -50,7 +50,7 @@ export const auth =
   };
 
 // Apollo GraphQL authentication for resolvers
-export const apolloAuth = async (req: Request, ...roles: string[]): Promise<void> => {
+export const apolloAuth = async (req: Request, ...roles: string[]): Promise<TUser> => {
   const roleNames = [...roles, userRole.superAdmin];
 
   const bearerToken = req.headers.authorization;
@@ -71,4 +71,5 @@ export const apolloAuth = async (req: Request, ...roles: string[]): Promise<void
 
   // Attach the user object to the request
   req.user = user;
+  return user
 };

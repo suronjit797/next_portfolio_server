@@ -10,17 +10,34 @@ export const globalTypeDefs = gql`
     desc
     descending
   }
+
+#  type
+  type MetaQuery {
+    page: Int!
+    limit: Int!
+    total: Int!
+  }
+
+  type ImageType {
+    path: String!
+    size: Int!
+    filename: String!
+  }
+
+
+  # input
+
+  input ImageInput {
+    path: String!
+    size:  Int!
+    filename: String!
+  }
+
   input PaginationInput {
     page: Int
     limit: Int
     sortOrder: SortOrder
     sortBy: String
-  }
-
-  type MetaQuery {
-    page: Int!
-    limit: Int!
-    total: Int!
   }
 `;
 

@@ -1,9 +1,16 @@
 import { Model } from "mongoose";
 import { IGetAll_service, IPagination, TFilter } from "../../shared/globalInterfaces";
 
-const globalService = <TType>(
-  ModelName: Model<TType, Record<string, unknown>>
-): { create: Function; getSingle: Function; update: Function; remove: Function; getAll: Function } => {
+interface IGlobalServiceReturn {
+  create: Function;
+  getSingle: Function;
+  update: Function;
+  remove: Function;
+  getAll: Function;
+  removeMany: Function;
+}
+
+const globalService = <TType>(ModelName: Model<TType, Record<string, unknown>>): IGlobalServiceReturn => {
   return {
     // create
     create: async (body: TType): Promise<TType | null> => {
@@ -32,6 +39,10 @@ const globalService = <TType>(
     // remove single
     remove: async (id: string): Promise<any> => {
       const data = await ModelName.findByIdAndDelete(id);
+      return data;
+    },
+    removeMany: async (filter: Partial<TFilter>): Promise<any> => {
+      const data = await ModelName.deleteMany(filter);
       return data;
     },
   };
