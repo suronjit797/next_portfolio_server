@@ -18,16 +18,23 @@ const router = express.Router();
 
 // upload
 // router.post("/upload", auth(), upload.single("photo"), (req, res, next) => {
-router.post("/upload", auth(), uploadCloudinary.single("photo"), (req, res, next) => {
+router.post("/upload", uploadCloudinary.single("photo"), (req, res, next) => {
   try {
     console.log(req.file);
     res.send({
       success: true,
       message: "File uploaded successfully",
+      // data: {
+      //   path: req.file?.path,
+      //   size: req.file?.size,
+      //   filename: req.file?.filename,
+      // },
       data: {
-        path: req.file?.path,
+        uid: req.file?.filename,
+        name: req.file?.filename + ".webp",
+        status: "done",
+        url: req.file?.path,
         size: req.file?.size,
-        filename: req.file?.filename,
       },
     });
   } catch (error) {

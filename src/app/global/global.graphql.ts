@@ -11,7 +11,7 @@ export const globalTypeDefs = gql`
     descending
   }
 
-#  type
+  #  type
   type MetaQuery {
     page: Int!
     limit: Int!
@@ -19,18 +19,21 @@ export const globalTypeDefs = gql`
   }
 
   type ImageType {
-    path: String!
-    size: Int!
-    filename: String!
+    uid: String
+    name: String
+    status: String
+    url: String
+    size: Int
   }
-
 
   # input
 
   input ImageInput {
-    path: String!
-    size:  Int!
-    filename: String!
+    uid: String
+    name: String
+    status: String
+    url: String
+    size: Int
   }
 
   input PaginationInput {
