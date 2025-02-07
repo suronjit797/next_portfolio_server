@@ -11,8 +11,8 @@ export const userTypeDefs = gql`
     name: String!
     email: String!
     role: String!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date
+    updatedAt: Date!
   }
 
   # register
@@ -50,8 +50,8 @@ export const userTypeDefs = gql`
 export const userResolvers = {
   Query: {
     users: async (_: any, __: any, { req }: any) => {
-      await apolloAuth(req, 'admin');
-      return await userService.getAll_service()
+      await apolloAuth(req, "admin");
+      return await userService.getAll_service();
     },
     user: async (_: any, { id }: { id: string }, { req }: any) => {
       await apolloAuth(req);

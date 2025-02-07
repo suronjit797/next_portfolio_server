@@ -5,7 +5,7 @@ import { ImageSchema } from "../../../shared/globalConstant";
 const projectSchema = new Schema<IProject>(
   {
     name: { type: String, required: true },
-    position: { type: Number, required: true },
+    position: { type: Number, required: true},
     thumbnail: ImageSchema,
     images: [ImageSchema],
     description: { type: String, require: true },

@@ -9,7 +9,6 @@ import { GraphqlContext, IPagination } from "../../../shared/globalInterfaces";
 import * as userService from "../user/user.service";
 
 export const skillsTypeDefs = gql`
-
   # queries
 
   type SkillImage {
@@ -29,11 +28,11 @@ export const skillsTypeDefs = gql`
   # inputs
   input SkillImageInp {
     path: String!
-    size: Float!    # Assuming size is represented in bytes
+    size: Float! # Assuming size is represented in bytes
     filename: String!
   }
 
-  input CreateSkillsInput {    
+  input CreateSkillsInput {
     name: String!
     image: SkillImageInp!
     types: String!
@@ -42,8 +41,8 @@ export const skillsTypeDefs = gql`
   input SkillsQuery {
     name: String
     types: String
-    createdAt: String
-    updatedAt: String
+    createdAt: Date
+    updatedAt: Date
     search: String
   }
 
@@ -94,7 +93,6 @@ export const skillsResolvers = {
       // Fetch skills
       return await skillService.getAll(page, filter);
     },
-   
   },
 
   Mutation: {
@@ -106,10 +104,9 @@ export const skillsResolvers = {
       // Authorization
       await apolloAuth(context.req);
 
-      // 
+      //
       const skills = await skillService.create(args.body);
       return skills;
     },
-  
   },
 };

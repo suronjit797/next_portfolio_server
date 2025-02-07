@@ -55,11 +55,9 @@ export type TFiles = {
 
 export interface baseResponse {
   _id: string;
-  createdAt: string;
+  createdAt: Date;
   updatedAt: string;
 }
-
-
 
 export interface GraphqlContext {
   user?: TUser | null; // Adjust user properties based on your token's payload

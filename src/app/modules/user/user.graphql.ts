@@ -18,8 +18,8 @@ export const userTypeDefs = gql`
     avatar: ImageType
     isActive: Boolean
     lastActive: Date
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date!
+    updatedAt: Date!
   }
   type LoginResponse {
     accessToken: String!
@@ -54,8 +54,8 @@ export const userTypeDefs = gql`
     name: String
     email: String
     role: String
-    createdAt: String
-    updatedAt: String
+    createdAt: Date
+    updatedAt: Date
     search: String
   }
 
@@ -121,7 +121,7 @@ export const userResolvers = {
   Mutation: {
     register: async (_: undefined, args: { body: CreateUserInput }): Promise<TUser | null> => {
       // Register user
-      console.log("register")
+      console.log("register");
       return await userService.create(args.body);
     },
 

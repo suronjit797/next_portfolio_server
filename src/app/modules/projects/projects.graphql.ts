@@ -32,8 +32,8 @@ export const projectTypeDefs = gql`
     liveUrl: String
     githubUrl: GithubUrlType!
     user: User!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date
+    updatedAt: Date!
   }
 
   # inputs
