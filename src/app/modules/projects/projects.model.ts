@@ -1,21 +1,13 @@
 import { Schema, Types, model } from "mongoose";
 import { IProject, TProjectModel } from "./projects.interface";
+import { ImageSchema } from "../../../shared/globalConstant";
 
 const projectSchema = new Schema<IProject>(
   {
     name: { type: String, required: true },
-    thumbnail: {
-      path: { type: String, require: true },
-      size: { type: String || Number, require: true },
-      filename: { type: String, require: true },
-    },
-    images: [
-      {
-        path: { type: String, require: true },
-        size: { type: String || Number, require: true },
-        filename: { type: String, require: true },
-      },
-    ],
+    position: { type: Number, required: true },
+    thumbnail: ImageSchema,
+    images: [ImageSchema],
     description: { type: String, require: true },
     packages: [{ type: String, require: true }],
     tags: [{ type: String, require: true }],

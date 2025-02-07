@@ -23,6 +23,7 @@ export const projectTypeDefs = gql`
   type Project {
     _id: ID!
     name: String!
+    position: Int!
     thumbnail: ImageType!
     images: [ImageType!]!
     description: String!
@@ -43,6 +44,7 @@ export const projectTypeDefs = gql`
 
   input CreateProjectInput {
     name: String!
+    position: Int!
     thumbnail: ImageInput!
     images: [ImageInput!]!
     description: String!
@@ -53,23 +55,25 @@ export const projectTypeDefs = gql`
   }
 
   input UpdateProjectInput {
-    name: String!
-    thumbnail: ImageInput!
-    images: [ImageInput!]!
-    description: String!
-    packages: [String!]!
-    tags: [String!]!
+    name: String
+    position: Int
+    thumbnail: ImageInput
+    images: [ImageInput]
+    description: String
+    packages: [String]
+    tags: [String!]
     liveUrl: String
-    githubUrl: GithubUrlInput!
+    githubUrl: GithubUrlInput
   }
 
   input ProjectQuery {
     _id: ID
-    name: String!
-    packages: [String!]!
-    tags: [String!]!
+    name: String
+    position: Int
+    packages: [String]
+    tags: [String]
     liveUrl: String
-    githubUrl: GithubUrlInput!
+    githubUrl: GithubUrlInput
     search: String
   }
 

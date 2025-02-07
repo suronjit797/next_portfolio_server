@@ -3,6 +3,7 @@ import { Model, ObjectId } from "mongoose";
 
 export interface IProject {
   _id?: string;
+  position: number;
   name: string;
   description: string;
   packages: string[];
@@ -11,7 +12,7 @@ export interface IProject {
   thumbnail: { path: string; size: string | number; filename: string };
   images: { path: string; size: string | number; filename: string }[];
   githubUrl: { frontend: string; backend: string };
-  user: ObjectId
+  user: ObjectId;
 }
 
 export type TProjectModel = Model<IProject, Record<string, unknown>>;

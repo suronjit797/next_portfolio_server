@@ -7,6 +7,7 @@ import { notFoundError } from "./app/middleware/notFound";
 
 const app: Application = express();
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
@@ -17,9 +18,7 @@ app.use(express.static("public"));
 app.use("/api/v1", router);
 
 app.get("/", async (req: Request, res: Response, next) => {
-  return res.send("<h1> Welcome to Chat app Server </h1>");
+  return res.send("<h1> Welcome to Next Portfolio Server </h1>");
 });
-
-
 
 export default app;

@@ -31,7 +31,7 @@ router.post("/upload", uploadCloudinary.single("photo"), (req, res, next) => {
       // },
       data: {
         uid: req.file?.filename,
-        name: req.file?.filename + ".webp",
+        name: req.file?.filename.split("/").pop() + ".webp",
         status: "done",
         url: req.file?.path,
         size: req.file?.size,

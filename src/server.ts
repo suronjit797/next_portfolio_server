@@ -17,6 +17,12 @@ process.on("uncaughtException", (error: Error) => {
   process.exit(1);
 });
 
+// app.use((req, res, next) => {
+//   console.log("Incoming request path:", req.path); // Logs the request path
+//   next();
+// });
+
+
 const bootFunctions = async (): Promise<void> => {
   try {
     if (!config.PORT || !config.DB_URI) {
@@ -28,7 +34,6 @@ const bootFunctions = async (): Promise<void> => {
     await mongoose.connect(config.DB_URI as string);
     successLogger("🛢 Database connected...");
 
-  
     // Initialize GraphQL server
     await graphqlServer.start();
     app.use(
