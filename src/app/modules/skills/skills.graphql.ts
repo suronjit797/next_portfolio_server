@@ -1,21 +1,21 @@
 import gql from "graphql-tag";
+import httpStatus from "http-status";
+import ApiError from "../../../ApiError";
+import { userRole } from "../../../constants/userConstants";
+import filterHelper from "../../../helper/filterHelper";
+import { paginationHelper } from "../../../helper/paginationHelper";
+import { GraphqlContext } from "../../../shared/globalInterfaces";
+import { apolloAuth } from "../../middleware/auth";
+import { GetAllSkills, ISkills, SkillsPaginationArgs } from "./skills.interface";
 import SkillsModel from "./skills.model";
 import skillService from "./skills.service";
-import { GetAllSkills, SkillsPaginationArgs, ISkills } from "./skills.interface";
-import { apolloAuth } from "../../middleware/auth";
-import { paginationHelper } from "../../../helper/paginationHelper";
-import filterHelper from "../../../helper/filterHelper";
-import { GraphqlContext, IPagination } from "../../../shared/globalInterfaces";
-import { userRole } from "../../../constants/userConstants";
-import ApiError from "../../../ApiError";
-import httpStatus from "http-status";
 
 const { superAdmin, admin } = userRole;
 
 export const skillsTypeDefs = gql`
   # queries
 
-  type Skills {
+  type SkillsType {
     _id: ID!
     name: String!
     image: ImageType!
@@ -37,7 +37,7 @@ export const skillsTypeDefs = gql`
     type: String
   }
 
-  input SkillsQuery {
+  input SkillsQueryInput {
     name: String
     type: String
     createdAt: Date
@@ -47,23 +47,21 @@ export const skillsTypeDefs = gql`
 
   type getAllSkillsQuery {
     meta: MetaQuery
-    data: [Skills!]
+    data: [SkillsType!]
   }
 
   # query
   type Query {
-    skills(pagination: PaginationInput, query: SkillsQuery): getAllSkillsQuery!
-    skill(id: ID!): Skills
-    # getUserSkills(id: ID!, pagination: PaginationInput): getAllSkillsQuery
-    # profile: Skills
+    skills(pagination: PaginationInput, query: SkillsQueryInput): getAllSkillsQuery!
+    skill(id: ID!): SkillsType
   }
 
   # mutation
   type Mutation {
-    createSkill(body: CreateSkillsInput!): Skills!
-    updateSkill(id: ID!, body: UpdateSkillsInput): Skills!
-    deleteSkill(id: ID!): Skills!
-    deleteManySkills(query: SkillsQuery!): Skills!
+    createSkill(body: CreateSkillsInput!): SkillsType!
+    updateSkill(id: ID!, body: UpdateSkillsInput): SkillsType!
+    deleteSkill(id: ID!): SkillsType!
+    deleteManySkills(query: SkillsQueryInput!): SkillsType!
   }
 `;
 

@@ -66,7 +66,7 @@ export const projectTypeDefs = gql`
     githubUrl: GithubUrlInput
   }
 
-  input ProjectQuery {
+  input ProjectQueryInput {
     _id: ID
     name: String
     position: Int
@@ -84,7 +84,7 @@ export const projectTypeDefs = gql`
 
   # query
   type Query {
-    projects(pagination: PaginationInput, query: ProjectQuery): getAllProjectsQuery!
+    projects(pagination: PaginationInput, query: ProjectQueryInput): getAllProjectsQuery!
     project(id: ID!): Project
   }
 
@@ -93,7 +93,7 @@ export const projectTypeDefs = gql`
     createProject(body: CreateProjectInput!): Project!
     updateProject(id: ID!, body: UpdateProjectInput): Project!
     deleteProject(id: ID!): Project!
-    deleteManyProject(query: ProjectQuery!): Project!
+    deleteManyProject(query: ProjectQueryInput!): Project!
   }
 `;
 

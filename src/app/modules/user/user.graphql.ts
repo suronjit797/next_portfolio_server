@@ -49,7 +49,7 @@ export const userTypeDefs = gql`
     password: String!
   }
 
-  input UserQuery {
+  input UserQueryInput {
     _id: ID
     name: String
     email: String
@@ -66,7 +66,7 @@ export const userTypeDefs = gql`
 
   # query
   type Query {
-    users(pagination: PaginationInput, query: UserQuery): getAllUsersQuery!
+    users(pagination: PaginationInput, query: UserQueryInput): getAllUsersQuery!
     user(id: ID!): User
     profile: User
   }
