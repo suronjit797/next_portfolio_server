@@ -1,11 +1,12 @@
 import { Schema, model } from "mongoose";
 import { ISkills, ISkillsModel } from "./skills.interface";
+import { ImageSchema } from "../../../shared/globalConstant";
 
 const skillsSchema = new Schema<ISkills>(
   {
     name: { type: String, required: true, trim: true },
-    types: { type: String, required: true, trim: true },
-    image: { type: Object, required: true },
+    type: { type: String, required: true, trim: true },
+    image: ImageSchema,
   },
   { timestamps: true }
 );

@@ -1,4 +1,4 @@
-import { IMeta, IPagination } from "../../../shared/globalInterfaces";
+import { ImageInterface, IMeta, IPagination } from "../../../shared/globalInterfaces";
 import { Model, ObjectId } from "mongoose";
 
 export interface IProject {
@@ -9,8 +9,8 @@ export interface IProject {
   packages: string[];
   tags: string[];
   liveUrl: string;
-  thumbnail: { path: string; size: string | number; filename: string };
-  images: { path: string; size: string | number; filename: string }[];
+  thumbnail: ImageInterface;
+  images: ImageInterface[];
   githubUrl: { frontend: string; backend: string };
   user: ObjectId;
 }

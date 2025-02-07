@@ -64,3 +64,11 @@ export interface GraphqlContext {
   req: Request;
   res: Response;
 }
+
+export interface ImageInterface {
+  uid: String;
+  name: String;
+  status: String;
+  url: String;
+  size: Number;
+}

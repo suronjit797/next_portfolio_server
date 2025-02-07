@@ -19,7 +19,7 @@ export const skillsTypeDefs = gql`
     _id: ID!
     name: String!
     image: ImageType!
-    type: String!
+    types: String!
     createdAt: Date!
     updatedAt: Date!
   }
@@ -28,18 +28,18 @@ export const skillsTypeDefs = gql`
   input CreateSkillsInput {
     name: String!
     image: ImageInput!
-    type: String!
+    types: String!
   }
 
   input UpdateSkillsInput {
     name: String
     image: ImageInput
-    type: String
+    types: String
   }
 
   input SkillsQuery {
     name: String
-    type: String
+    types: String
     createdAt: Date
     updatedAt: Date
     search: String
@@ -60,7 +60,7 @@ export const skillsTypeDefs = gql`
 
   # mutation
   type Mutation {
-    createSkill(body: CreateSkillsInput!): Skills!
+    createSkills(body: CreateSkillsInput!): Skills!
     updateSkill(id: ID!, body: UpdateSkillsInput): Skills!
     deleteSkill(id: ID!): Skills!
     deleteManySkills(query: SkillsQuery!): Skills!
@@ -92,7 +92,7 @@ export const skillsResolvers = {
   },
 
   Mutation: {
-    createSkill: async (
+    createSkills: async (
       _: undefined,
       args: { body: Partial<ISkills> },
       context: GraphqlContext

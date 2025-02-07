@@ -1,14 +1,10 @@
 import { Model, ObjectId } from "mongoose";
-import { IMeta, IPagination } from "../../../shared/globalInterfaces";
+import { ImageInterface, IMeta, IPagination } from "../../../shared/globalInterfaces";
 
 export interface ISkills {
   name: string;
-  types: string;
-  image: {
-    path: string;
-    size: number | string;
-    filename: string;
-  };
+  type: string;
+  image: ImageInterface;
 }
 
 export type ISkillsModel = Model<ISkills, Record<string, unknown>>;

@@ -9,11 +9,12 @@ import { globalResolvers, globalTypeDefs } from "./global/global.graphql";
 import { userResolvers, userTypeDefs } from "./modules/user/user.graphql";
 import { GraphqlContext } from "../shared/globalInterfaces";
 import { projectResolvers, projectTypeDefs } from "./modules/projects/projects.graphql";
+import { skillsResolvers, skillsTypeDefs } from "./modules/skills/skills.graphql";
 // import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache';
 
 // Merge the type definitions and resolvers
-export const typeDefs = mergeTypeDefs([globalTypeDefs, userTypeDefs, projectTypeDefs]);
-export const resolvers = mergeResolvers([globalResolvers, userResolvers, projectResolvers]);
+export const typeDefs = mergeTypeDefs([globalTypeDefs, userTypeDefs, projectTypeDefs, skillsTypeDefs]);
+export const resolvers = mergeResolvers([globalResolvers, userResolvers, projectResolvers, skillsResolvers]);
 
 const plugins: any = [];
 if (config.NODE_ENV === "production") {

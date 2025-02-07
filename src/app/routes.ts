@@ -3,6 +3,7 @@ import express from "express";
 
 import { auth } from "./middleware/auth";
 import { uploadCloudinary } from "./middleware/uploadToCloudinary";
+import imagesServices from "./modules/images/images.service";
 
 const router = express.Router();
 
@@ -20,26 +21,22 @@ const router = express.Router();
 // router.post("/upload", auth(), upload.single("photo"), (req, res, next) => {
 router.post("/upload", uploadCloudinary.single("photo"), (req, res, next) => {
   try {
-    console.log(req.file);
+    const data = {
+      uid: req.file?.filename,
+      name: req.file?.filename.split("/").pop() + ".webp",
+      url: req.file?.path,
+      size: req.file?.size,
+    };
+    imagesServices.create(data);
     res.send({
       success: true,
       message: "File uploaded successfully",
-      // data: {
-      //   path: req.file?.path,
-      //   size: req.file?.size,
-      //   filename: req.file?.filename,
-      // },
-      data: {
-        uid: req.file?.filename,
-        name: req.file?.filename.split("/").pop() + ".webp",
-        status: "done",
-        url: req.file?.path,
-        size: req.file?.size,
-      },
+      data,
     });
   } catch (error) {
     next(error);
   }
 });
+
 
 export default router;

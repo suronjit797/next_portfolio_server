@@ -1,4 +1,4 @@
-import { IMeta, IPagination } from "../../../shared/globalInterfaces";
+import { ImageInterface, IMeta, IPagination } from "../../../shared/globalInterfaces";
 import { Model } from "mongoose";
 
 export type LoginPayload = {
@@ -14,7 +14,7 @@ export type TUser = {
   email: string;
   role: "superAdmin" | "admin" | "user";
   password?: string;
-  avatar?: string;
+  avatar?: ImageInterface;
   isActive: boolean;
 };
 
@@ -22,7 +22,7 @@ export interface IBaseUser {
   name: string;
   email: string;
   role: "superAdmin" | "admin" | "user";
-  avatar?: string;
+  avatar?: ImageInterface;
 }
 
 // gql
