@@ -18,9 +18,9 @@ export const resolvers = mergeResolvers([globalResolvers, userResolvers, project
 
 const plugins: any = [];
 
-// if (config.NODE_ENV === "production") {
-//   plugins.push(ApolloServerPluginLandingPageDisabled());
-// }
+if (config.NODE_ENV === "production") {
+  plugins.push(ApolloServerPluginLandingPageDisabled());
+}
 
 // Create the ApolloServer instance with the custom context
 export const graphqlServer = new ApolloServer<GraphqlContext>({
