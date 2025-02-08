@@ -1,13 +1,13 @@
 import { Schema, model } from "mongoose";
 import { TUser, TUserModel } from "./user.interface";
-import { userRole } from "../../../constants/userConstants";
 import { ImageSchema } from "../../../shared/globalConstant";
+
 
 const userSchema = new Schema<TUser>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    role: { type: String, enum: Object.values(userRole), default: "user" },
+    role: { type: String, enum: ["user", "admin", "superAdmin"], default: "user" },
     password: { type: String, required: true },
     isActive: { type: Boolean, default: false },
     avatar: ImageSchema,
@@ -15,6 +15,6 @@ const userSchema = new Schema<TUser>(
   { timestamps: true }
 );
 
-const UserModel = model<TUser, TUserModel>("User", userSchema);
+const UsersModel = model<TUser, TUserModel>("Users", userSchema);
 
-export default UserModel;
+export default UsersModel;

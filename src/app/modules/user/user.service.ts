@@ -1,11 +1,11 @@
+import globalService from "../../global/global.service";
 import httpStatus from "http-status";
 import ApiError from "../../../ApiError";
 import config from "../../../config";
 import { TUser } from "./user.interface";
-import UserModel from "./user.model";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import globalService from "../../global/global.service";
+import bcrypt from "bcrypt";
+import UserModel from "./user.model";
 
 // global
 const globalServices = globalService(UserModel);
