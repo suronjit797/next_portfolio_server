@@ -8,7 +8,7 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "next_portfolio",
+    folder: "next_portfolio_test",
     // allowed_formats: ["jpg", "jpeg", "png"],
     transformation: [
         { width: 1024 },
