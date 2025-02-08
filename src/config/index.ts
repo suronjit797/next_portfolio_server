@@ -15,5 +15,7 @@ export default {
     refresh_token_time: process.env.REFRESH_TOKEN_TIME,
     refresh_token_secret: process.env.REFRESH_TOKEN_SECRET as Secret,
   },
-  CLOUD_FOLDER_NAME: process.env.CLOUD_FOLDER_NAME as string
+  CLOUD_FOLDER_NAME: process.env.CLOUD_FOLDER_NAME as string,
+  SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
+  SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
 };

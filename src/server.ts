@@ -8,6 +8,7 @@ import globalError, { notFoundError } from "./app/middleware/globalError";
 import { graphqlServer } from "./app/graphql";
 import { decodeToken } from "./app/middleware/auth";
 import { GraphqlContext } from "./shared/globalInterfaces";
+import { createDefaultSuperAdmin } from "./constants/userConstants";
 
 // Define server variable type
 export let server: Server = http.createServer(app);
@@ -33,7 +34,7 @@ const bootFunctions = async (): Promise<void> => {
     successLogger(`Connecting to database at ${config.DB_URI}`);
     await mongoose.connect(config.DB_URI as string);
     successLogger("🛢 Database connected...");
-
+    createDefaultSuperAdmin()
     // Initialize GraphQL server
     await graphqlServer.start();
     app.use(
