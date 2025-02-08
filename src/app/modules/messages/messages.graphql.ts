@@ -20,7 +20,7 @@ export const messagesTypeDefs = gql`
     name: String!
     email: String!
     message: String!
-    unread:Boolean!
+    unread: Boolean!
     createdAt: Date!
     updatedAt: Date!
   }
@@ -36,20 +36,28 @@ export const messagesTypeDefs = gql`
     name: String
     email: String
     message: String
+    unread: Boolean
   }
 
   input MessagesQueryInput {
     name: String
     email: String
     message: String
-    unread:Boolean
+    unread: Boolean
     createdAt: Date
     updatedAt: Date
     search: String
   }
 
+  type MessageMetaQuery {
+    page: Int!
+    limit: Int!
+    total: Int!
+    unread: Int!
+  }
+
   type getAllMessagesQuery {
-    meta: MetaQuery
+    meta: MessageMetaQuery
     data: [MessagesType!]
   }
 
