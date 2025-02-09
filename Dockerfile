@@ -1,13 +1,14 @@
-FROM node:20-alpine
+FROM node:18
 
 WORKDIR /app
 
 COPY package.json yarn.lock ./
 
-RUN yarn install
+RUN yarn install --production
 
 COPY . .
 
 EXPOSE 5000
 
-CMD ["yarn", "dev"]
+# Command to start the server
+CMD ["yarn", "start"]
