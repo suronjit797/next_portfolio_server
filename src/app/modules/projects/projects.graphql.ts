@@ -16,8 +16,8 @@ const { superAdmin, admin } = userRole;
 export const projectTypeDefs = gql`
   # queries
   type GithubUrlType {
-    frontend: String!
-    backend: String!
+    frontend: String
+    backend: String
   }
 
   type Project {
@@ -30,9 +30,9 @@ export const projectTypeDefs = gql`
     packages: [String!]!
     tags: [String!]!
     liveUrl: String
-    githubUrl: GithubUrlType!
-    user: User!
-    createdAt: Date
+    githubUrl: GithubUrlType
+    user: User
+    createdAt: Date!
     updatedAt: Date!
   }
 
