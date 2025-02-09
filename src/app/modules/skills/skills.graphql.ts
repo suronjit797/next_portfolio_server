@@ -70,7 +70,7 @@ export const skillsResolvers = {
     skills: async (_: undefined, args: SkillsPaginationArgs, context: GraphqlContext): Promise<GetAllSkills> => {
       const { req } = context;
       // Authorization
-      await apolloAuth(req);
+      // await apolloAuth(req);
 
       // Pagination and filtering
       const page = paginationHelper(args.pagination);

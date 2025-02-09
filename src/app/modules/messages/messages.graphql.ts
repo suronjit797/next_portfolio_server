@@ -107,7 +107,7 @@ export const messagesResolvers = {
       context: GraphqlContext
     ): Promise<IMessages | null> => {
       // Authorization
-      await apolloAuth(context.req);
+      // await apolloAuth(context.req);
 
       //
       const messages = await messageService.create(args.body);
